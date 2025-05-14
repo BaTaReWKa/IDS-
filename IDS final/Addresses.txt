@@ -1,0 +1,63 @@
+[ADDRESS] ул. Академика Веденеева, 15
+[ID] SNR_V22 | [PLACE] Север
+
+[ADDRESS] ул. Аркадия Гайдара, 21
+[ID] SNR_K37 | [PLACE] Центр
+
+[ADDRESS] ул. Баумана, 72
+[ID] SNR_U21 | [PLACE] Центр
+
+[ADDRESS] ул. Белинского, 94
+[ID] SNR_X24 | [PLACE] Север
+
+[ADDRESS] ул. Братская, 35
+[ID] SNR_W49 | [PLACE] Запад
+
+[ADDRESS] ул. Васильева, 28
+[ID] SNR_T20 | [PLACE] Восток
+
+[ADDRESS] ул. Газеты Звезда, 45
+[ID] SNR_F6 | [PLACE] Юго-Запад
+
+[ADDRESS] ул. Гайдара, 7
+[ID] SNR_K11 | [PLACE] Север
+
+[ADDRESS] ул. Гальперина, 6
+[ID] SNR_G33 | [PLACE] Юго-Восток
+
+[ADDRESS] ул. Героев Хасана, 105
+[ID] SNR_R18 | [PLACE] Северо-Восток
+
+[ADDRESS] ул. Декабристов, 44
+[ID] SNR_I35 | [PLACE] Север
+
+[ADDRESS] ул. Декабрьских Событий, 11
+[ID] SNR_P42 | [PLACE] Юго-Запад
+
+[ADDRESS] ул. Дружбы, 9
+[ID] SNR_L38 | [PLACE] Запад
+
+[ADDRESS] ул. Екатерининская, 128
+[ID] SNR_M13 | [PLACE] Центр
+
+[ADDRESS] ул. Еловая, 27
+[ID] SNR_O41 | [PLACE] Восток
+
+[ADDRESS] ул. Загородная, 73
+[ID] SNR_T46 | [PLACE] Север
+
+[ADDRESS] ул. Камышловская, 21
+[ID] SNR_A1 | [PLACE] Север
+
+[ADDRESS] ул. Карпинского, 207
+[ID] SNR_A1 | [PLACE] Юг
+
+[ADDRESS] ул. Кировоградская, 9
+[ID] SNR_A27 | [PLACE] Запад
+
+[ADDRESS] ул. Клара Цеткин, 13
+[ID] SNR_J36 | [PLACE] Восток
+
+[ADDRESS] ул. Кольцевая, 17
+[ID] SNR_H34 | [PLACE] Юг
+
