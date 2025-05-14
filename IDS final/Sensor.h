@@ -24,11 +24,6 @@ public:
         lastUpdate = std::chrono::system_clock::now();
     }
 
-    bool isTimedOut(int seconds = 5) const {
-        auto now = std::chrono::system_clock::now();
-        return std::chrono::duration_cast<std::chrono::seconds>(now - lastUpdate).count() > seconds;
-    }
-
     void setLastDistance(double distance) { lastDistance = distance; }
     double getLastDistance() const { return lastDistance; }
 };

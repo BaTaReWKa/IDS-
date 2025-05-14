@@ -148,6 +148,7 @@ namespace IDSapp {
 			this->ListOfAddresses->Size = System::Drawing::Size(333, 379);
 			this->ListOfAddresses->TabIndex = 0;
 			this->ListOfAddresses->Sorted = 1;
+			this->ListOfAddresses->SelectedIndexChanged += gcnew System::EventHandler(this, &IDS::ListOfAddresses_SelectedIndexChanged);
 			// 
 			// AddressInput
 			// 
@@ -203,7 +204,7 @@ namespace IDSapp {
 			this->ListOfSensors->Size = System::Drawing::Size(327, 180);
 			this->ListOfSensors->Sorted = true;
 			this->ListOfSensors->TabIndex = 5;
-			this->ListOfAddresses->SelectedIndexChanged += gcnew System::EventHandler(this, &IDS::ListOfAddresses_SelectedIndexChanged);
+			this->ListOfSensors->SelectedIndexChanged += gcnew System::EventHandler(this, &IDS::ListOfSensors_SelectedIndexChanged);
 			// 
 			// LabelPlace
 			// 

@@ -1,5 +1,6 @@
 #include "IDS.h"
 #include <fstream>
+#include <vector>
 
 using namespace IDSapp;
 using namespace System::IO::Ports;
@@ -25,20 +26,22 @@ IDS::~IDS()
 		serialPort->Close();
 }
 
-// Открытие порта для датчика
+// При открытии программы:
 void IDS::SafeInitializeRuntime()
 {
+	// Выгрузка адресов из файла Addresses.txt
 	std::ifstream in("Addresses.txt");
 	if (!in.is_open()) return;
 
 	std::string line, currentAddress;
 	House* currentHouse = nullptr;
 
+	// Преобразование в нужный формат
 	while (std::getline(in, line))
 	{
 		if (line.find("[ADDRESS]") == 0)
 		{
-			currentAddress = line.substr(10); // после "[ADDRESS] "
+			currentAddress = line.substr(10);
 			currentHouse = new House(currentAddress);
 			HouseWrapper^ wrapper = gcnew HouseWrapper(currentHouse);
 			ListOfAddresses->Items->Add(wrapper);
@@ -49,8 +52,8 @@ void IDS::SafeInitializeRuntime()
 			size_t pipePos = line.find("| [PLACE] ");
 			if (pipePos == std::string::npos) continue;
 
-			std::string id = line.substr(idStart, pipePos - idStart - 1); // -1 чтобы убрать пробел
-			std::string place = line.substr(pipePos + 10); // после "| [PLACE] "
+			std::string id = line.substr(idStart, pipePos - idStart - 1); 
+			std::string place = line.substr(pipePos + 10);
 
 			currentHouse->addSensor(id, place);
 		}
@@ -58,6 +61,7 @@ void IDS::SafeInitializeRuntime()
 	in.close();
 }
 
+// Инициализация контекстного меню для удаления и адресов, и датчиков
 void IDS::InitializeContextMenu()
 {
 	// Контекстное меню для домов
@@ -75,6 +79,7 @@ void IDS::InitializeContextMenu()
 	ListOfSensors->ContextMenuStrip = sensorContextMenu;
 }
 
+// Подключение датчика
 void IDS::ConnectSensor_Click(System::Object^ sender, System::EventArgs^ e) {
 	try
 	{
@@ -181,7 +186,7 @@ void IDS::UpdateDistance(System::Object^ sender, System::EventArgs^ e)
 				House* house = hw->GetNativeHouse();
 				if (house->hasSensor(marshal_as<std::string>(sensorId))) {
 					house->updateDistance(marshal_as<std::string>(sensorId), distance);
-					ListOfAddresses->Items[i] = hw; // обновление UI
+					ListOfAddresses->Items[i] = hw;
 				}
 			}
 		}
@@ -192,6 +197,7 @@ void IDS::UpdateDistance(System::Object^ sender, System::EventArgs^ e)
 		LoadSensor->Enabled = false;
 	}
 }
+
 
 void IDS::ListOfSensors_SelectedIndexChanged(System::Object^ sender, System::EventArgs^ e)
 {
@@ -205,17 +211,18 @@ void IDS::ListOfSensors_SelectedIndexChanged(System::Object^ sender, System::Eve
 
 	// Получаем ID из строки: ID: SNR_A1 | Место: Восток
 	String^ selectedText = ListOfSensors->SelectedItem->ToString();
-	int idStart = selectedText->IndexOf("ID: ") + 4;
 	int idEnd = selectedText->IndexOf(" |");
-	String^ id = selectedText->Substring(idStart, idEnd - idStart);
+	String^ id = selectedText->Substring(4, idEnd - 4);
 
 	std::string idStr = marshal_as<std::string>(id);
 	if (!house->hasSensor(idStr)) return;
 
 	std::shared_ptr<Sensor> sensor = house->getSensor(idStr);
 	if (!sensor) return;
+	else { MessageBox::Show(id); }
 
-	if (sensor->isTimedOut()) {
+
+	if (!serialPort->IsOpen) {
 		StatusOfSensor->Text = "Отключён";
 	}
 	else if (sensor->getLastDistance() < 50.0) {
@@ -338,6 +345,7 @@ void IDS::SearchInput_TextChanged(System::Object^ sender, System::EventArgs^ e)
 	ListOfAddresses->ClearSelected();
 }
 
+// При закрытии программы:
 void IDS::IDS_FormClosing(System::Object^ sender, FormClosingEventArgs^ e)
 {
 	std::ofstream out("Addresses.txt");
@@ -361,6 +369,7 @@ void IDS::IDS_FormClosing(System::Object^ sender, FormClosingEventArgs^ e)
 	out.close();
 }
 
+// Вызов контекстного меню для списка датчиков
 void IDS::ListOfSensors_RightClick(System::Object^ sender, System::Windows::Forms::MouseEventArgs^ e)
 {
 	if (e->Button == ::MouseButtons::Right)
@@ -373,14 +382,13 @@ void IDS::ListOfSensors_RightClick(System::Object^ sender, System::Windows::Form
 	}
 }
 
-
+// Удаление выбранного датчика через контекстное меню
 void IDS::DeleteSelectedSensor(System::Object^ sender, System::EventArgs^ e)
 {
 	int selectedIndex = ListOfSensors->SelectedIndex;
 	if (selectedIndex < 0 || ListOfAddresses->SelectedItem == nullptr)
 		return;
 
-	// Получаем ID датчика из строки, например: "ID: 123 | Место: крыша"
 	String^ selectedEntry = ListOfSensors->Items[selectedIndex]->ToString();
 	Regex^ idRegex = gcnew Regex("ID:\\s*(\\S+)");
 	Match^ match = idRegex->Match(selectedEntry);
@@ -389,17 +397,16 @@ void IDS::DeleteSelectedSensor(System::Object^ sender, System::EventArgs^ e)
 
 	String^ sensorId = match->Groups[1]->Value;
 
-	// Удаляем из модели
 	HouseWrapper^ hw = dynamic_cast<HouseWrapper^>(ListOfAddresses->SelectedItem);
 	if (hw != nullptr)
 	{
 		hw->GetNativeHouse()->removeSensor(marshal_as<std::string>(sensorId));
 	}
 
-	// Удаляем из интерфейса
 	ListOfSensors->Items->RemoveAt(selectedIndex);
 }
 
+// Вызов контекстного меню для списка адресов
 void IDS::ListOfAddresses_RightClick(System::Object^ sender, System::Windows::Forms::MouseEventArgs^ e)
 {
 	if (e->Button == ::MouseButtons::Right)
@@ -412,6 +419,7 @@ void IDS::ListOfAddresses_RightClick(System::Object^ sender, System::Windows::Fo
 	}
 }
 
+// Удаление выбранного адреса через контекстное меню
 void IDS::DeleteSelectedAddress(System::Object^ sender, System::EventArgs^ e)
 {
 	int selectedIndex = ListOfAddresses->SelectedIndex;
